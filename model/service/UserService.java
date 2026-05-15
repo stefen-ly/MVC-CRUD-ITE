@@ -15,5 +15,5 @@ public interface UserService {
     UserResponseDTO getUserByUuid(UUID uuid);
     int deleteUserById(UUID uuid);
     UserResponseDTO updateUserById(UUID uuid, UpdateRequestDto updateRequestDto);
-//    List<UserResponseDTO> searchUserByName(String name);
+    List<UserResponseDTO> searchUserByName(String name);
 }

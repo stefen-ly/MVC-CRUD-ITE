@@ -8,6 +8,7 @@ import view.APIResponseTemplate;
 import view.Utils;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 public class UserController {
@@ -32,7 +33,7 @@ public class UserController {
 
                 case 2 -> createUser();
 
-//                case 3 -> searchUser();
+                case 3 -> searchUser();
 
                 case 4 -> updateUser();
                 case 5 -> deleteUser();
@@ -80,28 +81,32 @@ public class UserController {
         Utils.printUserInfo(user);
     }
 
-//    private void searchUser() {
-//
-//        String target =
-//                utils.input("Enter name");
-//
-//        List<UserResponseDTO> users =
-//                userService.searchUserByName(target);
-//
-//        if (users.isEmpty()) {
-//            System.out.println("User not found!");
-//            return;
-//        }
-//
-//        Utils.userList(users);
-//    }
+    private void searchUser() {
+
+        String target =
+                utils.input("=>  បញ្ចូលឈ្មោះ ");
+
+        List<UserResponseDTO> users =
+                userService.searchUserByName(target);
+
+        if (users.isEmpty()) {
+
+            System.out.println(
+                    "មិនមានទិន្នទ័យអ្នកប្រើប្រាស់!"
+            );
+
+            return;
+        }
+
+        Utils.printUserInfo(users.getFirst());
+    }
 
     private void deleteUser() {
 
         try {
 
             UUID uuid = UUID.fromString(
-                    utils.input("=> បញ្ចូល UUID")
+                    utils.input("=> បញ្ចូល UUID ")
             );
 
             int result =
@@ -121,13 +126,13 @@ public class UserController {
         try {
 
             UUID uuid = UUID.fromString(
-                    utils.input("=> បញ្ចូល UUID: ")
+                    utils.input("=> បញ្ចូល UUID ")
             );
 
             UserResponseDTO oldUser =
                     userService.getUserByUuid(uuid);
 
-            System.out.println("\n=== OLD USER INFO ===");
+            System.out.println("\n=====[ព័ត៌មានអ្នកប្រើប្រាស់]======");
 
             Utils.printUserInfo(oldUser);
 
@@ -137,16 +142,16 @@ public class UserController {
                 """);
 
             String name =
-                    utils.input("=> New Name: ");
+                    utils.input("=> បញ្ចូលឈ្មោះថ្មី ");
 
             String email =
-                    utils.input("=> New Email: ");
+                    utils.input("=> បញ្ចូលអីុម៉ែលថ្មី ");
 
             String password =
-                    utils.input("=> New Password: ");
+                    utils.input("=> បញ្ចូលពាក្យសម្ងាត់ថ្មី ");
 
             String profile =
-                    utils.input("=> New Profile: ");
+                    utils.input("=> បញ្ចូលប្រូហ្វាល់ថ្មី ");
 
             UpdateRequestDto dto =
                     new UpdateRequestDto(
@@ -163,7 +168,7 @@ public class UserController {
                     );
 
             System.out.println(
-                    "\nUpdate Successful...!"
+                    "\nការធ្វើបច្ចុប្បន្នភាពជោគជ័យ...!"
             );
 
             Utils.printUserInfo(updatedUser);
@@ -171,7 +176,7 @@ public class UserController {
         } catch (Exception e) {
 
             System.out.println(
-                    "UUID Invalid!"
+                    "UUID មិនត្រឹមត្រូវ!"
             );
         }
     }

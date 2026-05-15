@@ -112,16 +112,12 @@ public class UserServiceImpl implements UserService {
         return userMapper.userToResponse(updatedUser);
     }
 
-//    @Override
-//    public List<UserResponseDTO> searchUserByName(String name) {
-//
-//        return userDao.findAll()
-//                .stream()
-//                .filter(u ->
-//                        u.name()
-//                                .toLowerCase()
-//                                .contains(name.toLowerCase())
-//                )
-//                .toList();
-//    }
+    @Override
+    public List<UserResponseDTO> searchUserByName(String name) {
+
+        return userDao.searchByName(name)
+                .stream()
+                .map(userMapper::userToResponse)
+                .toList();
+    }
 }

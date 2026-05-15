@@ -14,4 +14,5 @@ public interface UserDao {
     User findByUuid(UUID uuid);
     void delete(UUID uuid);
     User update(User user);
+    List<User> searchByName(String name);
 }

@@ -77,4 +77,16 @@ public class UserDaoImpl implements UserDao {
 
         return null;
     }
+
+    @Override
+    public List<User> searchByName(String name) {
+
+        return users.stream()
+                .filter(user ->
+                        user.getName()
+                                .toLowerCase()
+                                .contains(name.toLowerCase())
+                )
+                .toList();
+    }
 }
