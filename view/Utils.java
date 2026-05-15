@@ -41,11 +41,18 @@ public class Utils {
         return sc.nextLine();
     }
 
-    public static void userList(List<APIResponseTemplate<List<UserResponseDTO>>> userList) {
-        Table table = new Table(8, BorderStyle.UNICODE_ROUND_BOX_WIDE);
+    public static void userList(
+            APIResponseTemplate<List<UserResponseDTO>> responseTemplate
+    ) {
+
+        Table table =
+                new Table(8,
+                        BorderStyle.UNICODE_ROUND_BOX_WIDE);
 
         CellStyle center =
-                new CellStyle(CellStyle.HorizontalAlign.center);
+                new CellStyle(
+                        CellStyle.HorizontalAlign.center
+                );
 
         final String BOLD = "\033[1m";
         final String RED = "\033[31m";
@@ -60,25 +67,29 @@ public class Utils {
         table.addCell(BOLD + RED + "MESSAGE" + RESET, center);
         table.addCell(BOLD + RED + "TIMESTAMP" + RESET, center);
 
-        for ( APIResponseTemplate<List <UserResponseDTO>> responseTemplate : userList) {
-            for (UserResponseDTO user: responseTemplate.data()){
-                table.addCell(user.id().toString());
-                table.addCell(user.uuid().toString());
-                table.addCell(user.name());
-                table.addCell(user.email());
-                table.addCell(user.profile());
+        for (UserResponseDTO user : responseTemplate.data()) {
 
-                table.addCell(String.valueOf(responseTemplate.status()));
-                table.addCell(String.valueOf(responseTemplate.message()));
-                table.addCell(String.valueOf(responseTemplate.timeStamp()));
-            }
+            table.addCell(user.id().toString());
+            table.addCell(user.uuid());
+            table.addCell(user.name());
+            table.addCell(user.email());
+            table.addCell(user.profile());
 
+            table.addCell(
+                    String.valueOf(responseTemplate.status())
+            );
+
+            table.addCell(responseTemplate.message());
+
+            table.addCell(
+                    String.valueOf(responseTemplate.timeStamp())
+            );
         }
 
         System.out.println(table.render());
     }
 
-    public static void printUserInfo(UserResponseDTO user) {
+    public static void printUserInfo(APIResponseTemplate<UserResponseDTO> user) {
 
 
         Table table = new Table(2, BorderStyle.UNICODE_ROUND_BOX_WIDE);
@@ -94,20 +105,39 @@ public class Utils {
         table.addCell(BOLD + BLUE + "VALUE" + RESET, center);
 
         table.addCell("ID");
-        table.addCell(user.id().toString());
+        table.addCell(user.data().id().toString());
 
         table.addCell("UUID");
-        table.addCell(user.uuid().toString());
+        table.addCell(user.data().uuid().toString());
 
         table.addCell("NAME");
-        table.addCell(user.name());
+        table.addCell(user.data().name());
 
         table.addCell("EMAIL");
-        table.addCell(user.email());
+        table.addCell(user.data().email());
 
         table.addCell("PROFILE");
-        table.addCell(user.profile());
+        table.addCell(user.data().profile());
 
         System.out.println(table.render());
+    }
+
+    public String requiredInput(String label, String message) {
+
+        String value;
+
+        do {
+
+            System.out.print(label + ": ");
+
+            value = sc.nextLine();
+
+            if (value.isBlank()) {
+                System.out.println(message);
+            }
+
+        } while (value.isBlank());
+
+        return value;
     }
 }

@@ -6,14 +6,27 @@ import model.dto.UserResponseDTO;
 import view.APIResponseTemplate;
 
 import java.util.List;
-import java.util.UUID;
 
 public interface UserService {
 
-    List<APIResponseTemplate <List<UserResponseDTO>>>getAllUsers();
-    UserResponseDTO createUser(CreateUserDto dto);
-    UserResponseDTO getUserByUuid(UUID uuid);
-    int deleteUserById(UUID uuid);
-    UserResponseDTO updateUserById(UUID uuid, UpdateRequestDto updateRequestDto);
-    List<UserResponseDTO> searchUserByName(String name);
+    APIResponseTemplate<List<UserResponseDTO>> getAllUsers();
+
+    APIResponseTemplate<UserResponseDTO> createUser(
+            CreateUserDto dto
+    );
+
+    APIResponseTemplate<UserResponseDTO> getUserByUuid(
+            String uuid
+    );
+
+    int deleteUserByUuid(String uuid);
+
+    APIResponseTemplate<UserResponseDTO> updateUserByUuid(
+            String uuid,
+            UpdateRequestDto updateRequestDto
+    );
+
+    APIResponseTemplate<UserResponseDTO> searchUserByName(
+            String name
+    );
 }

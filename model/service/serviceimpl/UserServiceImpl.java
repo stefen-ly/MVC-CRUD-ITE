@@ -1,6 +1,5 @@
 package model.service.serviceimpl;
 
-import exception.FoundUserException;
 import mapper.UserMapper;
 import model.User;
 import model.dao.UserDao;
@@ -10,85 +9,70 @@ import model.dto.UserResponseDTO;
 import model.service.UserService;
 import view.APIResponseTemplate;
 
+import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
 
 public class UserServiceImpl implements UserService {
 
     private final UserDao userDao;
+
     private final UserMapper userMapper;
 
     public UserServiceImpl(
             UserDao userDao,
             UserMapper userMapper
     ) {
+
         this.userDao = userDao;
         this.userMapper = userMapper;
     }
 
     @Override
-    public   List<APIResponseTemplate<List<UserResponseDTO>>> getAllUsers() {
+    public APIResponseTemplate<List<UserResponseDTO>> getAllUsers() {
 
-        return List.of(
-                userDao.findAll()
-        );
+        return userDao.findAll();
     }
 
     @Override
-    public UserResponseDTO createUser(CreateUserDto dto) {
+    public APIResponseTemplate<UserResponseDTO> createUser(
+            CreateUserDto createUserDto
+    ) {
 
-        User user = new User();
-
-        user.setId(userDao.findAll().data().size() + 1001);
-        user.setUuid(UUID.randomUUID());
-        user.setName(dto.name());
-        user.setEmail(dto.email());
-        user.setPassword(dto.password());
-        user.setProfile("default.png");
-
-        userDao.save(user);
-
-        return userMapper.userToResponse(user);
+        return userDao.createUser(createUserDto);
     }
 
     @Override
-    public UserResponseDTO getUserByUuid(UUID uuid) {
+    public APIResponseTemplate<UserResponseDTO> getUserByUuid(
+            String uuid
+    ) {
+
+        return userDao.findByUuid(uuid);
+    }
+
+    @Override
+    public int deleteUserByUuid(String uuid) {
 
         User user =
-                userDao.findByUuid(uuid);
+                userDao.findUserEntityByUuid(uuid);
 
-        if (user == null) {
-            throw new FoundUserException(
-                    "មិនមានទិន្នទ័យអ្នកប្រើប្រាស់!"
-            );
+        if (user != null) {
+
+            userDao.delete(uuid);
+
+            return 1;
         }
 
-        return userMapper.userToResponse(user);
+        return 0;
     }
 
     @Override
-    public int deleteUserById(UUID uuid) {
-
-        userDao.delete(uuid);
-
-        return 1;
-    }
-
-    @Override
-    public UserResponseDTO updateUserById(
-            UUID uuid,
+    public APIResponseTemplate<UserResponseDTO> updateUserByUuid(
+            String uuid,
             UpdateRequestDto updateRequestDto
     ) {
 
         User oldUser =
-                userDao.findByUuid(uuid);
-
-        if (oldUser == null) {
-
-            throw new FoundUserException(
-                    "រកមិនឃើញអ្នកប្រើប្រាស់!"
-            );
-        }
+                userDao.findUserEntityByUuid(uuid);
 
         if (!updateRequestDto.name().isBlank()) {
             oldUser.setName(updateRequestDto.name());
@@ -109,15 +93,22 @@ public class UserServiceImpl implements UserService {
         User updatedUser =
                 userDao.update(oldUser);
 
-        return userMapper.userToResponse(updatedUser);
+        return APIResponseTemplate
+                .<UserResponseDTO>builder()
+                .status(200)
+                .message("ធ្វើបច្ចុប្បន្នភាពជោគជ័យ!")
+                .timeStamp(LocalDate.now())
+                .data(
+                        userMapper.userToResponse(updatedUser)
+                )
+                .build();
     }
 
     @Override
-    public List<UserResponseDTO> searchUserByName(String name) {
+    public APIResponseTemplate<UserResponseDTO> searchUserByName(
+            String name
+    ) {
 
-        return userDao.searchByName(name)
-                .stream()
-                .map(userMapper::userToResponse)
-                .toList();
+        return userDao.searchByName(name);
     }
 }

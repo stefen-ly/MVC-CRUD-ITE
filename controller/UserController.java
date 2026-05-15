@@ -7,9 +7,8 @@ import model.service.UserService;
 import view.APIResponseTemplate;
 import view.Utils;
 
-import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
+
 
 public class UserController {
 
@@ -49,36 +48,57 @@ public class UserController {
 
     private void showAllUsers() {
 
-        if (userService.getAllUsers().isEmpty()) {
-            System.out.println("មិនមានទិន្នទ័យអ្នកប្រើប្រាស់!");
+        APIResponseTemplate<List<UserResponseDTO>> users =
+                userService.getAllUsers();
+
+        if (users.data().isEmpty()) {
+
+            System.out.println(
+                    "មិនមានទិន្នន័យអ្នកប្រើប្រាស់!"
+            );
+
             return;
         }
 
-        Utils.userList(userService.getAllUsers());
-    }
-
-    public APIResponseTemplate <UserResponseDTO> createUer(CreateUserDto createUserDto) {
-        return APIResponseTemplate.<UserResponseDTO>builder()
-                .status(200)
-                .data(userService.createUser(createUserDto))
-                .timeStamp(LocalDate.now())
-                .build();
+        Utils.userList(users);
     }
 
     private void createUser() {
 
-        String name = utils.input("=> បញ្ចូលឈ្មោះ ");
-        String email = utils.input("=> បញ្ចូលអីុម៉ែល ");
-        String password = utils.input("=> បញ្ចូលពាក្យសម្ងាត់ ");
+        String name =
+                utils.requiredInput(
+                        "=> បញ្ចូលឈ្មោះ",
+                        "ឈ្មោះមិនអាចទទេបានទេ!"
+                );
+
+        String email =
+                utils.requiredInput(
+                        "=> បញ្ចូលអ៊ីម៉ែល",
+                        "អ៊ីម៉ែលមិនអាចទទេបានទេ!"
+                );
+
+        String password =
+                utils.requiredInput(
+                        "=> បញ្ចូលពាក្យសម្ងាត់",
+                        "ពាក្យសម្ងាត់មិនអាចទទេបានទេ!"
+                );
 
         CreateUserDto dto =
-                new CreateUserDto(name, email, password);
+                new CreateUserDto(
+                        name,
+                        email,
+                        password
+                );
 
-        UserResponseDTO user =
+        APIResponseTemplate<UserResponseDTO> response =
                 userService.createUser(dto);
 
-        System.out.println("ការចុះឈ្មោះជោគជ័យ...!");
-        Utils.printUserInfo(user);
+        System.out.println("""
+            
+            =====[ បង្កើតអ្នកប្រើប្រាស់ជោគជ័យ ]=====
+            """);
+
+        Utils.printUserInfo(response);
     }
 
     private void searchUser() {
@@ -86,32 +106,20 @@ public class UserController {
         String target =
                 utils.input("=>  បញ្ចូលឈ្មោះ ");
 
-        List<UserResponseDTO> users =
+        APIResponseTemplate<UserResponseDTO> user =
                 userService.searchUserByName(target);
-
-        if (users.isEmpty()) {
-
-            System.out.println(
-                    "មិនមានទិន្នទ័យអ្នកប្រើប្រាស់!"
-            );
-
-            return;
-        }
-
-        Utils.printUserInfo(users.getFirst());
+                Utils.printUserInfo(user);
     }
 
     private void deleteUser() {
 
         try {
 
-            UUID uuid = UUID.fromString(
+            String uuid = (
                     utils.input("=> បញ្ចូល UUID ")
             );
 
-            int result =
-                    userService.deleteUserById(uuid);
-
+            int result = userService.deleteUserByUuid(uuid);
             if (result > 0) {
                 System.out.println("អ្នកប្រើប្រាស់ត្រូវបានលុប!");
             }
@@ -125,11 +133,9 @@ public class UserController {
 
         try {
 
-            UUID uuid = UUID.fromString(
-                    utils.input("=> បញ្ចូល UUID ")
-            );
+            String uuid = utils.input("=> បញ្ចូល UUID ");
 
-            UserResponseDTO oldUser =
+           APIResponseTemplate<UserResponseDTO> oldUser =
                     userService.getUserByUuid(uuid);
 
             System.out.println("\n=====[ព័ត៌មានអ្នកប្រើប្រាស់]======");
@@ -161,8 +167,8 @@ public class UserController {
                             profile
                     );
 
-            UserResponseDTO updatedUser =
-                    userService.updateUserById(
+            APIResponseTemplate <UserResponseDTO> updatedUser =
+                    userService.updateUserByUuid(
                             uuid,
                             dto
                     );

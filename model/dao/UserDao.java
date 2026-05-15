@@ -1,18 +1,27 @@
 package model.dao;
 
 import model.User;
+import model.dto.CreateUserDto;
 import model.dto.UserResponseDTO;
 import view.APIResponseTemplate;
 
 import java.util.List;
-import java.util.UUID;
 
 public interface UserDao {
 
     APIResponseTemplate<List<UserResponseDTO>> findAll();
+
+    APIResponseTemplate<UserResponseDTO> createUser(CreateUserDto createUserDto);
+
     void save(User user);
-    User findByUuid(UUID uuid);
-    void delete(UUID uuid);
+
+    APIResponseTemplate<UserResponseDTO> findByUuid(String uuid);
+
+    User findUserEntityByUuid(String uuid);
+
+    void delete(String uuid);
+
     User update(User user);
-    List<User> searchByName(String name);
+
+    APIResponseTemplate<UserResponseDTO> searchByName(String name);
 }
