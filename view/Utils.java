@@ -51,14 +51,14 @@ public class Utils {
         final String RED = "\033[31m";
         final String RESET = "\033[0m";
 
-        table.addCell(BOLD + RED + "លេខសម្គាល់ខ្លួន" + RESET, center);
-        table.addCell(BOLD + RED + "លេខសម្គាល់ UUID" + RESET, center);
-        table.addCell(BOLD + RED + "ឈ្មោះអ្នកប្រើប្រាស់" + RESET, center);
-        table.addCell(BOLD + RED + "អីុម៉ែល" + RESET, center);
-        table.addCell(BOLD + RED + "ប្រូហ្វាល់" + RESET, center);
-        table.addCell(BOLD + RED + "ស្ថានភាព" + RESET, center);
-        table.addCell(BOLD + RED + "ព័ត៌មាន" + RESET, center);
-        table.addCell(BOLD + RED + "ពេលវេលា" + RESET, center);
+        table.addCell(BOLD + RED + "ID" + RESET, center);
+        table.addCell(BOLD + RED + "UUID" + RESET, center);
+        table.addCell(BOLD + RED + "NAME" + RESET, center);
+        table.addCell(BOLD + RED + "EMAIL" + RESET, center);
+        table.addCell(BOLD + RED + "PROFILE" + RESET, center);
+        table.addCell(BOLD + RED + "STATUS" + RESET, center);
+        table.addCell(BOLD + RED + "MESSAGE" + RESET, center);
+        table.addCell(BOLD + RED + "TIMESTAMP" + RESET, center);
 
         for ( APIResponseTemplate<List <UserResponseDTO>> responseTemplate : userList) {
             for (UserResponseDTO user: responseTemplate.data()){

@@ -66,6 +66,15 @@ public class UserDaoImpl implements UserDao {
     @Override
     public User update(User user) {
 
+        for (int i = 0; i < users.size(); i++) {
+            if (users.get(i).getUuid().equals(user.getUuid())) {
+
+                users.set(i, user);
+
+                return user;
+            }
+        }
+
         return null;
     }
 }

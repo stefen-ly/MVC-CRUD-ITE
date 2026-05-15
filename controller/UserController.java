@@ -1,6 +1,7 @@
 package controller;
 
 import model.dto.CreateUserDto;
+import model.dto.UpdateRequestDto;
 import model.dto.UserResponseDTO;
 import model.service.UserService;
 import view.APIResponseTemplate;
@@ -33,8 +34,8 @@ public class UserController {
 
 //                case 3 -> searchUser();
 
-                case 4 -> deleteUser();
-
+                case 4 -> updateUser();
+                case 5 -> deleteUser();
                 case 0 -> {
                     System.out.println("ត្រូវបានចាកចេញពីប្រព័ន្ធ...");
                     return;
@@ -112,6 +113,66 @@ public class UserController {
 
         } catch (Exception e) {
             System.out.println("UUID មិនត្រឹមត្រូវទេ!");
+        }
+    }
+
+    private void updateUser() {
+
+        try {
+
+            UUID uuid = UUID.fromString(
+                    utils.input("=> បញ្ចូល UUID: ")
+            );
+
+            UserResponseDTO oldUser =
+                    userService.getUserByUuid(uuid);
+
+            System.out.println("\n=== OLD USER INFO ===");
+
+            Utils.printUserInfo(oldUser);
+
+            System.out.println("""
+                
+                Press Enter to skip updating field
+                """);
+
+            String name =
+                    utils.input("=> New Name: ");
+
+            String email =
+                    utils.input("=> New Email: ");
+
+            String password =
+                    utils.input("=> New Password: ");
+
+            String profile =
+                    utils.input("=> New Profile: ");
+
+            UpdateRequestDto dto =
+                    new UpdateRequestDto(
+                            name,
+                            email,
+                            password,
+                            profile
+                    );
+
+            UserResponseDTO updatedUser =
+                    userService.updateUserById(
+                            uuid,
+                            dto
+                    );
+
+            System.out.println(
+                    "\nUpdate Successful...!"
+            );
+
+            Utils.printUserInfo(updatedUser);
+
+        } catch (Exception e) {
+
+            System.out.println(
+                    "UUID Invalid!"
+            );
         }
     }
 }

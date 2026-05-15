@@ -75,8 +75,41 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponseDTO updateUserById(UUID uuid, UpdateRequestDto updateRequestDto) {
-        return null;
+    public UserResponseDTO updateUserById(
+            UUID uuid,
+            UpdateRequestDto updateRequestDto
+    ) {
+
+        User oldUser =
+                userDao.findByUuid(uuid);
+
+        if (oldUser == null) {
+
+            throw new FoundUserException(
+                    "រកមិនឃើញអ្នកប្រើប្រាស់!"
+            );
+        }
+
+        if (!updateRequestDto.name().isBlank()) {
+            oldUser.setName(updateRequestDto.name());
+        }
+
+        if (!updateRequestDto.email().isBlank()) {
+            oldUser.setEmail(updateRequestDto.email());
+        }
+
+        if (!updateRequestDto.password().isBlank()) {
+            oldUser.setPassword(updateRequestDto.password());
+        }
+
+        if (!updateRequestDto.profile().isBlank()) {
+            oldUser.setProfile(updateRequestDto.profile());
+        }
+
+        User updatedUser =
+                userDao.update(oldUser);
+
+        return userMapper.userToResponse(updatedUser);
     }
 
 //    @Override
